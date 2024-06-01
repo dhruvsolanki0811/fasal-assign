@@ -13,3 +13,48 @@
     --netflix-font-red: #dc2626;
     --border-btn: rgb(51 65 85/1);
 }
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.multi-line-ellipsis {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 3; /* Number of lines to show */
+  /* Optionally, you can also set fixed height or max-height for better control */
+  max-height: 4.1em;
+}
+
+.two-line-ellipsis {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2; /* Number of lines to show */
+  /* Optionally, you can also set fixed height or max-height for better control */
+  /* max-height: 3em; */
+}
+::-webkit-scrollbar {
+  background-color: #1f2028;
+  width: 0.2rem;
+  height: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #622424;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
