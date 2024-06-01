@@ -2,3 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+    padding: 0;
+    margin: 0;
+  }
+:root {
+    background: #171717;
+    color: white;
+    --background: rgb(23, 23, 23);
+    --netflix-font-red: #dc2626;
+    --border-btn: rgb(51 65 85/1);
+}
