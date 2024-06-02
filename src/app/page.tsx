@@ -1,7 +1,6 @@
 'use client'
 import Playlistcard from "@/components/Playlistcard";
 import SearchGrid from "@/components/SearchGrid";
-import { useModalStore } from "@/store/modalStore";
 import { useSearchStore } from "@/store/searchStore";
 
 export default function Home() {

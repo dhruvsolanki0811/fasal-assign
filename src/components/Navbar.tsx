@@ -8,12 +8,15 @@ import smalllogo from "@/assets/smalllogo.png";
 import { IoSearch } from "react-icons/io5";
 import { useSearchStore } from "@/store/searchStore";
 import { useSearchShow } from "@/hooks/useShowData";
+import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 function Navbar() {
-  const { data, isLoading, isError, refetch } = useSearchShow();
+  const {  refetch } = useSearchShow();
+  const router=useRouter()
   const { query, setQuery, setShows, shows } = useSearchStore();
   const [debounceValue, setDebounceValue] = useState("");
-
+  const { data: session, status } = useSession();
   const [timeOutId, settimeOutId] = useState<NodeJS.Timeout | null>();
 
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -31,20 +34,19 @@ function Navbar() {
   }, [query]);
 
   useEffect(() => {
-    if(query.length>0){
-    refetchQuery();}else{
-        setShows([])
+    if (query.length > 0) {
+      refetchQuery();
+    } else {
+      setShows([]);
     }
-}, [debounceValue]);
+  }, [debounceValue]);
   const refetchQuery = async () => {
     const { data: updatedSearchResult } = await refetch();
     if (updatedSearchResult) {
       setShows(updatedSearchResult);
     }
-
   };
 
-  
   return (
     <>
       <div className="header h-[4rem] w-full  sticky top-0 z-[10000] bg-[#171717]">
@@ -74,9 +76,17 @@ function Navbar() {
             />
             <IoSearch className="search-box text-[1.4rem] cursor-pointer" />
           </div>
-          <div className="account text-[14px] font-semibold flex items-center justify-center rounded-[4px] bg-[var(--netflix-font-red)] my-5 ps-2 pe-2 cursor-pointer hover:bg-[#c61414]">
-            Signin
-          </div>
+          {session && status == "authenticated" ? (
+            <div 
+            className="account text-[14px] font-semibold flex items-center justify-center rounded-[4px] bg-[var(--netflix-font-red)] my-5 ps-2 pe-2 cursor-pointer hover:bg-[#c61414]"
+            onClick={() => signOut()}>logout</div>
+          ) : (
+            <div 
+              onClick={()=>router.push('/signin')}
+            className="account text-[14px] font-semibold flex items-center justify-center rounded-[4px] bg-[var(--netflix-font-red)] my-5 ps-2 pe-2 cursor-pointer hover:bg-[#c61414]">
+              Signin
+            </div>
+          )}
         </div>
       </div>
     </>
