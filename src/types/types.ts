@@ -1,3 +1,10 @@
+export type User = {
+  firstName: string ;
+  lastName: string ;
+  email: string ;
+  password: string ;
+}
+
 export type SearchShow = {
   Title: string;
   Year?: string;
