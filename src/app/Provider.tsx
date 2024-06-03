@@ -14,7 +14,7 @@ function Provider({ children }: { children: React.ReactNode }) {
   return (
     <>
       <QueryClientProvider client={queryClient}>
-        <SessionProvider>
+        <SessionProvider >
           <Navbar></Navbar>
           {open && <MovieModal />}
           {children}

@@ -1,13 +1,13 @@
 'use client'
 import { useSession } from 'next-auth/react'
 import { redirect } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect } from 'react'
 
 export  function ProtectedPage (Component: any)  {
   return function WithAuth(props: any) {
-    const {  status } = useSession()
-    useEffect(() => {
-      if (status=='unauthenticated' || status=='loading') {
+    const {  status ,} = useSession()
+    useLayoutEffect(() => {
+      if (status=='unauthenticated') {
         redirect('/signin')
       }
     }, [status])
