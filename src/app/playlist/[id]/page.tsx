@@ -41,7 +41,7 @@ function PlaylistPage({ params }: { params: { id: string } }) {
       ) : (
         data && (
           <div className="btn cursor-pointer mt-10 flex items-center gap-2 px-2 py-1 h-[2rem] rounded-[10px] text-[white]  flex justify-center items-center text-[17px] font-semibold">
-            Movie Playlist - {data.name}
+            Playlist - {data.name}
           </div>
         )
       )}
