@@ -1,3 +1,5 @@
+
+
 export type User = {
   firstName: string ;
   lastName: string ;
@@ -9,7 +11,6 @@ export type SearchShow = {
   Title: string;
   Year?: string;
   imdbID: string;
-  Type?: string;
   Poster?: string;
 };
 
@@ -17,6 +18,17 @@ type Rating = {
   Source: string;
   Value: string;
 };
+
+export interface Playlist {
+  _id:string;
+  name: string;
+  movies: SearchShow[];
+  isPublic: boolean;
+  user: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
 
 export type Show = {
   Title: string;

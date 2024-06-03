@@ -31,3 +31,4 @@ export const useSearchShow = () => {
 
   return useQuery({ queryKey: ["search", query], queryFn: searchQuery , enabled: false });
 };
+
