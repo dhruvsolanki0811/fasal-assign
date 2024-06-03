@@ -1,7 +1,7 @@
 'use client'
 import { useSession } from 'next-auth/react'
 import { redirect } from 'next/navigation'
-import { useEffect, useLayoutEffect } from 'react'
+import {  useLayoutEffect } from 'react'
 
 export const WithoutAuth = (Component: any) => {
   return function WithoutAuth(props: any) {

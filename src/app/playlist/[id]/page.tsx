@@ -18,12 +18,12 @@ function PlaylistPage({ params }: { params: { id: string } }) {
   const { data, isLoading } = useFetchMoviesByPlaylist({
     playlistid: params.id,
   });
-  const { query,setQuery,setShows } = useSearchStore();
-  useEffect(()=>{
-    setQuery("")
-    setShows([])
-  },[]) 
-   const { data: session } = useSession();
+  const { query, setQuery, setShows } = useSearchStore();
+  useEffect(() => {
+    setQuery("");
+    setShows([]);
+  }, []);
+  const { data: session } = useSession();
   const { setShowId, setOpen } = useModalStore();
   const { mutate: removeFromPlaylist, isPending } = useDeleteMovieToPlaylist();
   if (query.length > 0) {
@@ -36,22 +36,31 @@ function PlaylistPage({ params }: { params: { id: string } }) {
 
   return (
     <>
-      <div className="playlist-grid  flex flex-col justify-center flex-wrap mt-10 gap-y-6 gap-x-5 w-full">
+      {isLoading || isPending ? (
+        <></>
+      ) : (
+        data && (
+          <div className="btn cursor-pointer mt-10 flex items-center gap-2 px-2 py-1 h-[2rem] rounded-[10px] text-[white]  flex justify-center items-center text-[17px] font-semibold">
+            Movie Playlist - {data.name}
+          </div>
+        )
+      )}
+      <div className="playlist-grid  flex  justify-center flex-wrap mt-8 mb-4 gap-y-6 gap-x-5 w-full">
         {isLoading || isPending ? (
           <Loader></Loader>
         ) : (
           data && (
             <>
-              <div className="btn cursor-pointer  flex items-center gap-2 px-2 py-1 h-[2rem] rounded-[10px] text-[white]  flex justify-center items-center text-[17px] font-semibold">
-                Movie Playlist - {data.name}
-              </div>
               {data.movies.length == 0 ? (
                 <div className="flex items-center justify-center  ">
                   <Image alt="" src={empty}></Image>
                 </div>
               ) : (
                 data.movies.map((show) => (
-                  <div key={show.imdbID} className="flex items-center justify-center  ">
+                  <div
+                    key={show.imdbID}
+                    className="flex  items-center justify-center  "
+                  >
                     <>
                       <div
                         onClick={() => {
