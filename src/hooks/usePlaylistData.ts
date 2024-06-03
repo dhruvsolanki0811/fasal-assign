@@ -1,8 +1,9 @@
 import { Playlist, SearchShow, Show } from "@/types/types"
 import { appendToBaseUrl } from "@/utils/utils"
-import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import axios from "axios"
+import {  useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import axios, { isAxiosError } from "axios"
 import { useSession } from "next-auth/react"
+import { redirect, useRouter } from "next/navigation"
 import { useState } from "react"
 import { toast } from "sonner"
 
@@ -106,8 +107,10 @@ export const useFetchUsersPlaylistsByMovie=({movieId}:{movieId:string})=>{
   export const useAddMovieToPlaylist=()=>{
     const {data:session}=useSession()
    const [movieId,setMovieId]= useState("")
+   const [playlistId,setPlaylistId]= useState("")
     const addMovieToPlaylist=async({movie,playlistid}:{movie:SearchShow,playlistid:string})=>{
         setMovieId(movie.imdbID)
+        setPlaylistId(playlistid)
         try{
             await axios.post(appendToBaseUrl(`/playlist/${playlistid}/movies`),{movie:{imdbID:movie.imdbID,Year:movie.Year,Poster:movie.Poster,Title:movie.Title}})
             
@@ -120,6 +123,7 @@ export const useFetchUsersPlaylistsByMovie=({movieId}:{movieId:string})=>{
     return useMutation({mutationKey:["Add to Playlist"],mutationFn:addMovieToPlaylist,
         onSuccess:()=>{
             queryClient.invalidateQueries({queryKey:["playlists by movie",movieId,session?.user?.email]});
+            queryClient.invalidateQueries({queryKey:["Playlist Movies",playlistId]});
             queryClient.invalidateQueries({queryKey:["playlists",session?.user?.email]});
             toast.info("Movie Added to Playlist!");
         }
@@ -130,8 +134,10 @@ export const useFetchUsersPlaylistsByMovie=({movieId}:{movieId:string})=>{
 export const useDeleteMovieToPlaylist=()=>{
     const {data:session}=useSession()
    const [movieId,setMovieId]= useState("")
+   const [playlistId,setPlaylistId]=useState("")
     const deleteMovieToPlaylist=async({movie,playlistid}:{movie:SearchShow,playlistid:string})=>{
         setMovieId(movie.imdbID)
+        setPlaylistId(playlistid)
         try{
             await axios.delete(appendToBaseUrl(`/playlist/${playlistid}/movies/${movie.imdbID}`))
             
@@ -144,8 +150,29 @@ export const useDeleteMovieToPlaylist=()=>{
     return useMutation({mutationKey:["delete from Playlist"],mutationFn:deleteMovieToPlaylist,
         onSuccess:()=>{
             queryClient.invalidateQueries({queryKey:["playlists by movie",movieId,session?.user?.email]});
+            queryClient.invalidateQueries({queryKey:["Playlist Movies",playlistId]});
             queryClient.invalidateQueries({queryKey:["playlists",session?.user?.email]});
             toast.info("Movie removed from Playlist!");
         }
     })
+}
+
+
+export const useFetchMoviesByPlaylist=({playlistid}:{playlistid:string})=>{
+    const router=useRouter()
+    const fetchMoviesByPlaylist=async()=>{
+        try{
+            const response=await axios.get(appendToBaseUrl(`/playlist/${playlistid}/movies`))
+            const data:{ movies: SearchShow[],name:string,user:string }=await response.data
+            return data
+        }
+        catch(e){
+            if(isAxiosError(e) && e.response?.data.error){
+                toast.error(e.response?.data.error)
+                router.push('/signin')
+            }
+            throw new Error("Some Error Occurer")
+        }
+    }
+    return useQuery({queryKey:["Playlist Movies",playlistid],queryFn:fetchMoviesByPlaylist,enabled:!!playlistid})
 }

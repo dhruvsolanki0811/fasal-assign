@@ -8,11 +8,12 @@ import { IoPerson } from "react-icons/io5";
 import { signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import {toast} from "sonner";
+import { WithoutAuth } from "@/components/HOC/WithoutAuth";
 
 function Signin() {
   const [loading,setLoading]=useState(false)
     
-  const { query } = useSearchStore();
+  const { query ,setQuery,setShows} = useSearchStore();
 
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -20,6 +21,10 @@ function Signin() {
     password: "",
   });
 
+  useEffect(()=>{
+    setQuery("")
+    setShows([])
+  },[])
   const [passwordShown, setPasswordShown] = useState(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -123,4 +128,4 @@ function Signin() {
   );
 }
 
-export default Signin;
+export default WithoutAuth(Signin);

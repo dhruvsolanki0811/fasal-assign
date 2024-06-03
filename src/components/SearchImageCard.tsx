@@ -36,7 +36,7 @@ function SearchImageCard({show}:{show:SearchShow}) {
           <div className="playlist-title ms-1 font-semibold cursor-pointer truncate ">
             {show.Title}
           </div>
-          <div className="playlist-dlt-icon me-[3px] border-white  p-1 border-solid cursor-pointer hover:bg-white hover:text-black">
+          <div className="playlist-dlt-icon me-[3px] border-white  p-1 border-solid cursor-pointer ">
             {show.Year?.substring(0,4)}
           </div>
         </div>

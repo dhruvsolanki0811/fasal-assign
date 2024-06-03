@@ -79,7 +79,7 @@ function Navbar() {
           {session && status == "authenticated" ? (
             <div 
             className="account text-[14px] font-semibold flex items-center justify-center rounded-[4px] bg-[var(--netflix-font-red)] my-5 ps-2 pe-2 cursor-pointer hover:bg-[#c61414]"
-            onClick={() => signOut()}>logout</div>
+            onClick={() => signOut()}>Logout</div>
           ) : (
             <div 
               onClick={()=>router.push('/signin')}

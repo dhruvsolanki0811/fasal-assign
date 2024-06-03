@@ -24,10 +24,11 @@ export async function GET(req: NextRequest, context: { params: Params }) {
         { status: 404 }
       );
     }
+    
 
     // Check if the playlist is public
     if (playlist.isPublic) {
-      return NextResponse.json({ movies: playlist.movies }, { status: 200 });
+      return NextResponse.json({ movies: playlist.movies,name:playlist.name,user:playlist.user.email }, { status: 200 });
     }
 
     // Get the session
@@ -41,14 +42,17 @@ export async function GET(req: NextRequest, context: { params: Params }) {
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
-
+    
+    const playlistUser=await User.findOne({_id:playlist.user}) 
     // Check if the requested user is the owner of the playlist
-    if (playlist.user.email !== user.email) {
+    if (!playlistUser) {
       return NextResponse.json({ error: "Not Authorized" }, { status: 403 });
     }
-
-    // Return the movies if the user is the owner of the playlist
-    return NextResponse.json({ movies: playlist.movies }, { status: 200 });
+    if (playlistUser.email !== user.email) {
+      return NextResponse.json({ error: "Not Authorized" }, { status: 403 });
+    }
+      // Return the movies if the user is the owner of the playlist
+    return NextResponse.json({ movies: playlist.movies,name:playlist.name,user:playlist.user.email }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { message: "Failed to create playlist", error: error },

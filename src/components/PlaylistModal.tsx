@@ -78,7 +78,7 @@ function PlaylistModal({
             ) : (
               playlists &&
               playlists.map((playlist) => (
-                <div className="li-items flex gap-3">
+                <div key={playlist.playlistId} className="li-items flex gap-3">
                   <input
                     type="checkbox"
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>

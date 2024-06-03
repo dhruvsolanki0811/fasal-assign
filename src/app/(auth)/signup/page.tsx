@@ -1,4 +1,5 @@
 "use client";
+import { WithoutAuth } from "@/components/HOC/WithoutAuth";
 import Loader from "@/components/Loader";
 import SearchGrid from "@/components/SearchGrid";
 import { useSearchStore } from "@/store/searchStore";
@@ -7,7 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios, { isAxiosError } from "axios";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { FaKey, FaRegEye } from "react-icons/fa";
 import { IoPerson } from "react-icons/io5";
 import { toast } from "sonner";
@@ -29,7 +30,11 @@ const registerUser=async (formData:User)=>{
       }
 }
 function Signup() {
-  const { query } = useSearchStore();
+  const { query,setQuery,setShows } = useSearchStore();
+  useEffect(()=>{
+    setQuery("")
+    setShows([])
+  },[])
   const router=useRouter()
   const [formData, setFormData] = useState({
     firstName: "",
@@ -191,4 +196,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default WithoutAuth(Signup);

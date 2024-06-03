@@ -8,14 +8,24 @@ import { FaPause, FaPlay } from "react-icons/fa";
 import placeholder from "@/assets/placeholder.jpg";
 import Loader from "./Loader";
 import PlaylistModal from "./PlaylistModal";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { Toaster, toast } from "sonner";
 
 function MovieModal() {
+  const { data: session } = useSession();
+  const router=useRouter()
   const { setOpen, setShowId } = useModalStore();
   const { data: show, isLoading } = useFetchShowByImdbId();
   const [showPlaylistModal, setShowPlaylistModal] = useState(false);
   return (
     <>
-      {showPlaylistModal && show && <PlaylistModal movie={show} closeModal={()=>setShowPlaylistModal(false)}></PlaylistModal>}
+      {showPlaylistModal && show && (
+        <PlaylistModal
+          movie={show}
+          closeModal={() => setShowPlaylistModal(false)}
+        ></PlaylistModal>
+      )}
       <div className="trailer-modal fixed  bg-[rgb(0,0,0,60%)] inset-0  z-[10000] flex justify-center items-center">
         <div className="trailer-container   relative aspect-video max-sm:w-full  h-[40rem] w-[55vw] ms-[1rem] me-[1rem] bg-[var(--background)]">
           {isLoading ? (
@@ -46,21 +56,20 @@ function MovieModal() {
                           <div className="play-btn-container flex gap-2">
                             <div
                               onClick={() => {
-                                setShowPlaylistModal(true);
+                                if (session) {
+                                  setShowPlaylistModal(true);
+                                } else {
+                                  toast.error("Login!")
+                                }
                               }}
                               className="play-btn cursor-pointer text-[14px] flex pt-1 pb-1 ps-3 pe-3 gap-1 justify-center items-center font-bold  mt-2 text-black bg-white  border-[1px] border-solid border-[white] rounded-[3px] hover:bg-[var(--border-btn)] hover:border-[var(--border-btn)] hover:text-white"
                             >
-                              {true ? (
+                              {
                                 <>
                                   <FaPlay className="text-[13px]"></FaPlay>
                                   Add to List
                                 </>
-                              ) : (
-                                <>
-                                  <FaPause className="text-[13px]"></FaPause>
-                                  Pause
-                                </>
-                              )}
+                              }
                             </div>
                           </div>
                         </div>

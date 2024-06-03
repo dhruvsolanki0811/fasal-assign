@@ -8,6 +8,9 @@ import { HiDotsVertical } from "react-icons/hi";
 import { BiTrash } from "react-icons/bi";
 import { useChangePlaylistStatus, useDeletePlaylist } from "@/hooks/usePlaylistData";
 import Loader from "./Loader";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { getBaseUrl } from "@/utils/utils";
 
 function Playlistcard({ playlist }: { playlist: Playlist }) {
   const { mutate ,isPending} = useDeletePlaylist();
@@ -15,6 +18,7 @@ function Playlistcard({ playlist }: { playlist: Playlist }) {
 
   const [ShowMenu, setShowMenu] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
+ const router= useRouter()
   const handleOutsideClick = (e: MouseEvent) => {
     if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
       setShowMenu(false);
@@ -26,12 +30,13 @@ function Playlistcard({ playlist }: { playlist: Playlist }) {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, []);
+
   return (
     <>
-      <div className="card-container relative rounded-[10px]  cursor-pointer shadow-[1px_1px_1px_1px_rgb(0,0,0,20%)]  h-[19rem] w-[13rem]  ">
-        <div className="img-overlay  relative h-[16rem] overflow-hidden ">
+      <div  className="card-container relative rounded-[10px]  cursor-pointer shadow-[1px_1px_1px_1px_rgb(0,0,0,20%)]  h-[19rem] w-[13rem]  ">
+        <div onClick={()=>{router.push(`/playlist/${playlist._id}`)}} className="img-overlay bg-white  relative h-[16rem] overflow-hidden ">
           <div className="h-full w-full  absolute z-[100] bg-[#0000001a]"></div>
-          <div className="absolute h-full w-[30%] flex flex-col text-white justify-center items-center ps-4 pe-4 bg-black bg-[#00000063] z-[500] right-[0]">
+          <div className="absolute h-full w-[30%] flex flex-col text-white justify-center items-center ps-4 pe-4  bg-[#00000063] z-[500] right-[0]">
             <MdOutlinePlaylistAdd className="text-[2rem] bg-transparent cursor-pointer" />
             {playlist.movies.length}
           </div>
@@ -59,7 +64,8 @@ function Playlistcard({ playlist }: { playlist: Playlist }) {
             {playlist.name}
           </div>
           <div
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation()
               setShowMenu(true);
             }}
             className="playlist-dlt-icon me-[3px]  p-1 cursor-pointer "
@@ -70,12 +76,14 @@ function Playlistcard({ playlist }: { playlist: Playlist }) {
         {ShowMenu && (
           <>
             <div
+
               ref={modalRef}
               className="show-menu flex flex-col gap-1 absolute z-[200000] bg-[var(--background)]  h-[4.5rem]  w-[10rem] rounded-[10px] bottom-[3.5rem] right-[0rem]"
             >
               <>
                 <div
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation()
                     mutate({ playlistid: playlist._id });
                   }}
                   className="menu-items bg-[var(--background)] hover:bg-black ps-3 pt-2 pb-2 flex gap-2 items-center rounded-[6px] border-white border-[1px] border-solid"
@@ -89,7 +97,8 @@ function Playlistcard({ playlist }: { playlist: Playlist }) {
                     </>
                   )}
                 </div>
-                <div onClick={()=>{
+                <div onClick={(e)=>{
+                  e.stopPropagation()
                   changeStatus({playlistid:playlist._id,isPublic:!playlist.isPublic})
                 }} className="menu-items bg-[var(--background)] hover:bg-black h-10 ps-3 pt-2 pb-2 flex gap-2 items-center border-white rounded-[6px] border-[1px] border-solid">
                   {changingStatus?
@@ -103,6 +112,17 @@ function Playlistcard({ playlist }: { playlist: Playlist }) {
                     {!playlist.isPublic ? "Private" : "Public"}
                   </div></>}
                 </div>
+                {playlist.isPublic &&<div
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    
+                      navigator.clipboard.writeText(`${getBaseUrl()}/playlist/${playlist._id}`)
+                      toast.success("Link copied!")
+                    }}
+                  className="menu-items bg-[var(--background)] hover:bg-black ps-3 pt-2 pb-2 flex gap-2 items-center rounded-[6px] border-white border-[1px] border-solid"
+                >
+                  Copy Link
+                </div>}
               </>
             </div>
           </>
